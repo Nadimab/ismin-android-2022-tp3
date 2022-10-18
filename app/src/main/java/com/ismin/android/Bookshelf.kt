@@ -29,5 +29,9 @@ class Bookshelf {
         return books.size;
     }
 
+    fun clean() {
+        books.clear();
+    }
+
 
 }
