@@ -8,15 +8,20 @@ import android.widget.TextView
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var txvBook: TextView
+    private lateinit var rcvBooks: RecyclerView
 
-    private val startForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            result: ActivityResult ->
+    private val bookshelf = Bookshelf()
+    private  var bookAdapter = BookAdapter(bookshelf)
+
+    private val startForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
         if (result.resultCode == Activity.RESULT_OK) {
             val createdBook = result.data?.getSerializableExtra(CREATED_BOOK) as Book
-            txvBook.text = createdBook.toString()
+            bookshelf.addBook(createdBook)
+            bookAdapter.notifyDataSetChanged()
         }
     }
 
@@ -25,7 +30,11 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        txvBook = findViewById(R.id.a_main_txv_book);
+        rcvBooks = findViewById(R.id.a_main_rcv_books);
+        rcvBooks.adapter = bookAdapter
+
+        var linearLayoutManager = LinearLayoutManager(this)
+        rcvBooks.layoutManager = linearLayoutManager
 
         val btnCreateBook = findViewById<Button>(R.id.a_main_btn_create_book);
 
