@@ -12,6 +12,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class MainActivity : AppCompatActivity() {
     private lateinit var rcvBooks: RecyclerView
@@ -43,7 +44,7 @@ class MainActivity : AppCompatActivity() {
         var linearLayoutManager = LinearLayoutManager(this)
         rcvBooks.layoutManager = linearLayoutManager
 
-        val btnCreateBook = findViewById<Button>(R.id.a_main_btn_create_book);
+        val btnCreateBook = findViewById<FloatingActionButton>(R.id.a_main_btn_create_book);
 
         btnCreateBook.setOnClickListener {
             val intent = Intent(this, CreateBookActivity::class.java)
