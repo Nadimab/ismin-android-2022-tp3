@@ -18,12 +18,13 @@ class MainActivity : AppCompatActivity() {
     private lateinit var rcvBooks: RecyclerView
 
     private val bookshelf = Bookshelf()
-    private var bookAdapter = BookAdapter(bookshelf)
+    private lateinit var bookAdapter: BookAdapter
 
     private val startForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
         if (result.resultCode == Activity.RESULT_OK) {
             val createdBook = result.data?.getSerializableExtra(CREATED_BOOK) as Book
             bookshelf.addBook(createdBook)
+            bookAdapter.refreshData(bookshelf.getAllBooks())
             bookAdapter.notifyDataSetChanged()
         }
     }
@@ -39,9 +40,11 @@ class MainActivity : AppCompatActivity() {
         bookshelf.addBook(anotherBook)
 
         rcvBooks = findViewById(R.id.a_main_rcv_books);
+
+        bookAdapter = BookAdapter(bookshelf.getAllBooks())
         rcvBooks.adapter = bookAdapter
 
-        var linearLayoutManager = LinearLayoutManager(this)
+        val linearLayoutManager = LinearLayoutManager(this)
         rcvBooks.layoutManager = linearLayoutManager
 
         val btnCreateBook = findViewById<FloatingActionButton>(R.id.a_main_btn_create_book);
@@ -60,9 +63,10 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.menu_clean -> {
+            R.id.action_clean -> {
                 val numberOfBooks = bookshelf.getTotalNumberOfBooks()
                 bookshelf.clean()
+                bookAdapter.refreshData(bookshelf.getAllBooks());
                 bookAdapter.notifyItemRangeRemoved(0, numberOfBooks)
                 true
             }
